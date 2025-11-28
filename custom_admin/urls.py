@@ -11,4 +11,5 @@ urlpatterns = [
     path('export/events/', export_events_excel, name='admin_export_events'),
     path('export/categories/', export_categories_excel, name='admin_export_categories'),
     path('export/applications/', export_applications_excel, name='admin_export_applications'),
+    path('events/create/', views.create_event, name='admin_create_event'),
 ]

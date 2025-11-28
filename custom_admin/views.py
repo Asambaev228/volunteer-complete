@@ -41,3 +41,29 @@ def admin_applications(request):
 def admin_export(request):
     """Страница экспорта данных"""
     return render(request, 'custom_admin/export.html')
+@user_passes_test(is_admin)
+def create_event(request):
+    """Создание нового мероприятия"""
+    categories = EventCategory.objects.all()
+    
+    if request.method == 'POST':
+        try:
+            event = Event.objects.create(
+                title=request.POST['title'],
+                description=request.POST['description'],
+                category_id=request.POST['category'],
+                organizer=request.user,
+                event_date=request.POST['event_date'],
+                location=request.POST['location'],
+                required_volunteers=request.POST['required_volunteers'],
+                status=request.POST.get('status', 'draft')
+            )
+            messages.success(request, f'Мероприятие "{event.title}" успешно создано!')
+            return redirect('admin_events')
+        except Exception as e:
+            messages.error(request, f'Ошибка при создании мероприятия: {str(e)}')
+    
+    return render(request, 'custom_admin/create_event.html', {
+        'categories': categories,
+        'status_choices': Event.STATUS_CHOICES
+    })

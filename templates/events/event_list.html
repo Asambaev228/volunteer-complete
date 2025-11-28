@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 1000px; margin: 0 auto;">
+    <!-- Заголовок и кнопки -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <h1 style="color: #2c3e50; margin: 0;">📅 Все мероприятия</h1>
+        <div style="display: flex; gap: 1rem;">
+            <a href="{% url 'event_search' %}" class="btn btn-warning">
+                🔍 Расширенный поиск
+            </a>
+        </div>
+    </div>
+
+    <!-- Информация о доступе -->
+    {% if not user.is_authenticated %}
+    <div style="background: #e3f2fd; padding: 1rem; border-radius: 6px; margin-bottom: 2rem;">
+        <p style="color: #1976d2; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+            ℹ️ <strong>Гостевой доступ:</strong> Вы можете просматривать мероприятия. Для подачи заявок <a href="{% url 'register' %}" style="color: #27ae60; font-weight: 500;">зарегистрируйтесь</a>.
+        </p>
+    </div>
+    {% endif %}
+
+    <!-- Список мероприятий -->
+    {% if events %}
+        <div style="display: grid; gap: 1.5rem;">
+            {% for event in events %}
+            <div style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 3px 15px rgba(0,0,0,0.1); transition: transform 0.3s; border-left: 4px solid #3498db;">
+                <div style="display: flex; justify-content: space-between; align-items: start; gap: 1rem; flex-wrap: wrap;">
+                    <div style="flex: 1;">
+                        <h3 style="margin: 0 0 0.5rem 0;">
+                            <a href="{% url 'event_detail' event.id %}" style="color: #2c3e50; text-decoration: none; font-size: 1.3rem;">
+                                {{ event.title }}
+                            </a>
+                        </h3>
+                        
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                            <span style="background: #ecf0f1; padding: 4px 8px; border-radius: 4px; font-size: 0.9rem; color: #7f8c8d;">
+                                🏷️ {{ event.category.name }}
+                            </span>
+                            <span style="background: #e8f6f3; padding: 4px 8px; border-radius: 4px; font-size: 0.9rem; color: #27ae60;">
+                                📍 {{ event.location }}
+                            </span>
+                            <span style="background: #e3f2fd; padding: 4px 8px; border-radius: 4px; font-size: 0.9rem; color: #3498db;">
+                                👥 Нужно волонтеров: {{ event.required_volunteers }}
+                            </span>
+                        </div>
+                        
+                        <p style="color: #7f8c8d; line-height: 1.5; margin-bottom: 1rem;">
+                            {{ event.description|truncatewords:40 }}
+                        </p>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                            <div style="color: #7f8c8d; font-size: 0.9rem;">
+                                <strong>📅 Дата:</strong> {{ event.event_date|date:"d.m.Y H:i" }}
+                            </div>
+                            <a href="{% url 'event_detail' event.id %}" class="btn btn-primary" style="font-size: 0.9rem;">
+                                Подробнее →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 4rem 2rem;">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">📭</div>
+            <h3 style="color: #7f8c8d; margin-bottom: 1rem;">Мероприятий пока нет</h3>
+            <p style="color: #95a5a6;">Но скоро они появятся! Следите за обновлениями.</p>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .event-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+</style>
+{% endblock %}

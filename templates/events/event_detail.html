@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+    <!-- Кнопка назад -->
+    <div style="margin-bottom: 1rem;">
+        <a href="{% url 'event_list' %}" style="color: #3498db; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+            ← Назад к списку мероприятий
+        </a>
+    </div>
+
+    <!-- Карточка мероприятия -->
+    <div style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); margin-bottom: 2rem;">
+        <h1 style="color: #2c3e50; margin-bottom: 1rem; border-bottom: 2px solid #ecf0f1; padding-bottom: 1rem;">
+            {{ event.title }}
+        </h1>
+        
+        <!-- Информация о мероприятии -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+            <div style="background: #f8f9fa; padding: 1rem; border-radius: 6px;">
+                <strong style="color: #7f8c8d; display: block; margin-bottom: 0.5rem;">🏷️ Категория</strong>
+                <span style="color: #2c3e50; font-weight: 500;">{{ event.category.name }}</span>
+            </div>
+            <div style="background: #f8f9fa; padding: 1rem; border-radius: 6px;">
+                <strong style="color: #7f8c8d; display: block; margin-bottom: 0.5rem;">📅 Дата и время</strong>
+                <span style="color: #2c3e50; font-weight: 500;">{{ event.event_date|date:"d.m.Y H:i" }}</span>
+            </div>
+            <div style="background: #f8f9fa; padding: 1rem; border-radius: 6px;">
+                <strong style="color: #7f8c8d; display: block; margin-bottom: 0.5rem;">📍 Место</strong>
+                <span style="color: #2c3e50; font-weight: 500;">{{ event.location }}</span>
+            </div>
+            <div style="background: #f8f9fa; padding: 1rem; border-radius: 6px;">
+                <strong style="color: #7f8c8d; display: block; margin-bottom: 0.5rem;">👥 Волонтеры</strong>
+                <span style="color: #2c3e50; font-weight: 500;">{{ event.required_volunteers }} требуется</span>
+            </div>
+        </div>
+
+        <!-- Описание -->
+        <div style="margin-bottom: 2rem;">
+            <h3 style="color: #2c3e50; margin-bottom: 1rem;">📖 Описание мероприятия</h3>
+            <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 6px; line-height: 1.6; white-space: pre-line;">
+                {{ event.description }}
+            </div>
+        </div>
+
+        <!-- Блок заявки -->
+        <div style="background: #e3f2fd; padding: 1.5rem; border-radius: 8px;">
+            <h3 style="color: #1976d2; margin-bottom: 1rem;">🎯 Участие в мероприятии</h3>
+            
+            {% if user.is_authenticated %}
+                {% if user_application %}
+                    <div style="background: #e8f5e8; padding: 1rem; border-radius: 5px;">
+                        <p style="color: #27ae60; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                            ✅ <strong>Ваш статус заявки:</strong> {{ user_application.get_status_display }}
+                        </p>
+                        {% if user_application.message %}
+                        <p style="color: #7f8c8d; margin: 0.5rem 0 0 0; font-size: 0.9rem;">
+                            <strong>Ваше сообщение:</strong> {{ user_application.message }}
+                        </p>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <p style="color: #2c3e50; margin-bottom: 1rem;">
+                        Хотите стать волонтером на этом мероприятии? Подайте заявку!
+                    </p>
+                    <a href="{% url 'apply_for_event' event.id %}" class="btn btn-success">
+                        🎯 Подать заявку волонтером
+                    </a>
+                {% endif %}
+            {% else %}
+                <div style="text-align: center;">
+                    <p style="color: #e74c3c; margin-bottom: 1rem; font-weight: 500;">
+                        🔒 Для подачи заявки необходимо зарегистрироваться в системе
+                    </p>
+                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <a href="{% url 'register' %}" class="btn btn-success">
+                            📝 Зарегистрироваться
+                        </a>
+                        <a href="{% url 'login' %}" class="btn btn-primary">
+                            🔑 Войти
+                        </a>
+                    </div>
+                    <p style="color: #7f8c8d; margin-top: 1rem; font-size: 0.9rem;">
+                        Гостевой доступ позволяет только просматривать мероприятия
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Дополнительная информация -->
+        <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #ecf0f1;">
+            <div style="display: flex; justify-content: space-between; color: #7f8c8d; font-size: 0.9rem; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <strong>Организатор:</strong> {{ event.organizer.username }}
+                </div>
+                <div>
+                    <strong>Создано:</strong> {{ event.created_at|date:"d.m.Y H:i" }}
+                </div>
+                <div>
+                    <strong>Обновлено:</strong> {{ event.updated_at|date:"d.m.Y H:i" }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

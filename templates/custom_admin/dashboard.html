@@ -1,0 +1,33 @@
+{% extends "custom_admin/base.html" %}
+
+{% block title %}Дашборд{% endblock %}
+
+{% block content %}
+<h2>📊 Статистика системы</h2>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-number">{{ stats.events_count }}</div>
+        <div>Мероприятий</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ stats.categories_count }}</div>
+        <div>Категорий</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ stats.applications_count }}</div>
+        <div>Заявок</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ stats.users_count }}</div>
+        <div>Организаторов</div>
+    </div>
+</div>
+
+<div style="margin-top: 2rem;">
+    <h3>Быстрые действия</h3>
+    <a href="{% url 'admin_export' %}" class="btn btn-success">📈 Экспорт всех данных</a>
+    <a href="{% url 'admin_events' %}" class="btn">📅 Управление мероприятиями</a>
+    <a href="{% url 'admin_applications' %}" class="btn">📝 Просмотр заявок</a>
+</div>
+{% endblock %}

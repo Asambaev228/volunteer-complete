@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админка - {% block title %}Волонтерская система{% endblock %}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+        .admin-header { background: #2c3e50; color: white; padding: 1rem; }
+        .admin-nav { background: #34495e; padding: 1rem; }
+        .admin-nav a { color: white; text-decoration: none; margin-right: 2rem; }
+        .admin-content { padding: 2rem; max-width: 1200px; margin: 0 auto; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0; }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }
+        .stat-number { font-size: 2rem; font-weight: bold; color: #3498db; }
+        .table { width: 100%; background: white; border-collapse: collapse; }
+        .table th, .table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        .table th { background: #f8f9fa; }
+        .btn { display: inline-block; padding: 10px 20px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; margin: 5px; }
+        .btn-success { background: #27ae60; }
+        .btn-warning { background: #f39c12; }
+    </style>
+</head>
+<body>
+    <header class="admin-header">
+        <h1>⚙️ Админка волонтерской системы</h1>
+    </header>
+    
+    <nav class="admin-nav">
+        <a href="{% url 'admin_dashboard' %}">📊 Дашборд</a>
+        <a href="{% url 'admin_events' %}">📅 Мероприятия</a>
+        <a href="{% url 'admin_categories' %}">🏷️ Категории</a>
+        <a href="{% url 'admin_applications' %}">📝 Заявки</a>
+        <a href="{% url 'admin_export' %}">📈 Экспорт</a>
+        <a href="{% url 'home' %}" style="float: right;">🏠 На сайт</a>
+        <a href="{% url 'logout' %}" style="float: right;">🚪 Выйти</a>
+    </nav>
+
+    <main class="admin-content">
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>

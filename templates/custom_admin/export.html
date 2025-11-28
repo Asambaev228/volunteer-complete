@@ -1,0 +1,31 @@
+{% extends "custom_admin/base.html" %}
+
+{% block title %}Экспорт данных{% endblock %}
+
+{% block content %}
+<h2>📈 Экспорт данных в Excel</h2>
+
+<div style="background: white; padding: 2rem; border-radius: 5px; margin: 2rem 0;">
+    <h3>Выберите данные для экспорта:</h3>
+    
+    <div style="margin: 2rem 0;">
+        <div style="background: #e8f5e8; padding: 1.5rem; border-radius: 5px; margin: 1rem 0;">
+            <h4>📅 Мероприятия</h4>
+            <p>Экспорт всех мероприятий с полной информацией</p>
+            <a href="{% url 'admin_export_events' %}" class="btn btn-success">📥 Скачать мероприятия (.xlsx)</a>
+        </div>
+        
+        <div style="background: #e3f2fd; padding: 1.5rem; border-radius: 5px; margin: 1rem 0;">
+            <h4>🏷️ Категории</h4>
+            <p>Экспорт всех категорий мероприятий</p>
+            <a href="{% url 'admin_export_categories' %}" class="btn btn-success">📥 Скачать категории (.xlsx)</a>
+        </div>
+        
+        <div style="background: #fff3cd; padding: 1.5rem; border-radius: 5px; margin: 1rem 0;">
+            <h4>📝 Заявки волонтеров</h4>
+            <p>Экспорт всех заявок на мероприятия</p>
+            <a href="{% url 'admin_export_applications' %}" class="btn btn-success">📥 Скачать заявки (.xlsx)</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

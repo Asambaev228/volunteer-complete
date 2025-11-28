@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 1000px; margin: 0 auto;">
+    <h1 style="color: #2c3e50; margin-bottom: 2rem;">🔍 Поиск мероприятий</h1>
+    
+    <!-- Форма поиска -->
+    <div style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); margin-bottom: 2rem;">
+        <form method="get" action="{% url 'event_search' %}">
+            <div style="display: grid; grid-template-columns: 2fr 1fr auto; gap: 1rem; align-items: end;">
+                <!-- Поле поиска -->
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; color: #2c3e50; font-weight: 500;">
+                        🔍 Поиск по названию и описанию
+                    </label>
+                    <input type="text" name="q" value="{{ query }}" 
+                           placeholder="Введите ключевые слова..." 
+                           style="width: 100%; padding: 10px 12px; border: 2px solid #ecf0f1; border-radius: 6px;">
+                </div>
+                
+                <!-- Фильтр по категории -->
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; color: #2c3e50; font-weight: 500;">
+                        🏷️ Категория
+                    </label>
+                    <select name="category" style="width: 100%; padding: 10px 12px; border: 2px solid #ecf0f1; border-radius: 6px;">
+                        <option value="">Все категории</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}" 
+                                    {% if selected_category == category.id|stringformat:"s" %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <!-- Кнопка поиска -->
+                <div>
+                    <button type="submit" class="btn btn-warning" style="height: 42px;">
+                        Найти
+                    </button>
+                </div>
+            </div>
+        </form>
+        
+        <!-- Сброс фильтров -->
+        {% if query or selected_category %}
+        <div style="margin-top: 1rem;">
+            <a href="{% url 'event_search' %}" 
+               style="color: #e74c3c; text-decoration: none; font-size: 0.9rem;">
+                ❌ Сбросить фильтры
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Результаты поиска -->
+    <div>
+        {% if events %}
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                <h2 style="color: #2c3e50; margin: 0;">
+                    Найдено мероприятий: <span style="color: #3498db;">{{ events.count }}</span>
+                </h2>
+                {% if query %}
+                <div style="color: #7f8c8d;">
+                    По запросу: "<strong>{{ query }}</strong>"
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Список найденных мероприятий -->
+            <div style="display: grid; gap: 1rem;">
+                {% for event in events %}
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); transition: transform 0.3s;">
+                    <h3 style="margin: 0 0 0.5rem 0;">
+                        <a href="{% url 'event_detail' event.id %}" style="color: #2c3e50; text-decoration: none;">
+                            {{ event.title }}
+                        </a>
+                    </h3>
+                    
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                        <span style="background: #ecf0f1; padding: 4px 8px; border-radius: 4px; font-size: 0.9rem; color: #7f8c8d;">
+                            🏷️ {{ event.category.name }}
+                        </span>
+                        <span style="background: #e3f2fd; padding: 4px 8px; border-radius: 4px; font-size: 0.9rem; color: #3498db;">
+                            📅 {{ event.event_date|date:"d.m.Y H:i" }}
+                        </span>
+                        <span style="background: #e8f6f3; padding: 4px 8px; border-radius: 4px; font-size: 0.9rem; color: #27ae60;">
+                            📍 {{ event.location }}
+                        </span>
+                    </div>
+                    
+                    <p style="color: #7f8c8d; line-height: 1.5; margin-bottom: 1rem;">
+                        {{ event.description|truncatewords:30 }}
+                    </p>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <a href="{% url 'event_detail' event.id %}" 
+                           style="color: #3498db; text-decoration: none; font-weight: 500;">
+                            Подробнее →
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- Сообщение если ничего не найдено -->
+            <div style="text-align: center; padding: 4rem 2rem;">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">🔍</div>
+                <h3 style="color: #7f8c8d; margin-bottom: 1rem;">
+                    {% if query or selected_category %}
+                        По вашему запросу ничего не найдено
+                    {% else %}
+                        Пока нет мероприятий
+                    {% endif %}
+                </h3>
+                <p style="color: #95a5a6; margin-bottom: 2rem;">
+                    {% if query or selected_category %}
+                        Попробуйте изменить параметры поиска или <a href="{% url 'event_list' %}" style="color: #3498db;">посмотреть все мероприятия</a>
+                    {% else %}
+                        Но скоро они появятся! Следите за обновлениями.
+                    {% endif %}
+                </p>
+                {% if query or selected_category %}
+                <a href="{% url 'event_search' %}" class="btn btn-primary">
+                    🔄 Сбросить поиск
+                </a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .event-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    input:focus, select:focus {
+        outline: none;
+        border-color: #f39c12;
+        box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.1);
+    }
+</style>
+{% endblock %}
